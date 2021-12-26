@@ -3,7 +3,8 @@ pragma solidity ^0.5.0;
 contract Dinsta {
     string public name = "Dinsta";
 
-    // Store Images
+    // store images
+    uint public imageCount = 0;
     mapping(uint => Image) public images;
 
     struct Image {
@@ -14,9 +15,24 @@ contract Dinsta {
         address payable author;
     }
 
-    // Create Images
-    function uploadImage() public {
-        images[1] = Image(1, 'kuku', 'Testing Images', 0, address(0x0));
+    event ImageCreated(
+        uint id,
+        string hash,
+        string description,
+        uint tipAmount,
+        address payable author
+    );
+
+    // create images
+    function uploadImage(string memory _imgHash, string memory _description) public {
+
+        // increment image id
+        imageCount = imageCount ++;
+
+        // add image to contract
+        images[imageCount] = Image(imageCount, _imgHash, _description, 0 msg.sender);
     }
-    // Tip Images
+    
+    // trigger the event
+    emit ImageCreated(imageCount, _imgHash, _description, 0 msg.sender);
 }
