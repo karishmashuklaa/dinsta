@@ -27,14 +27,23 @@ contract('Dinsta', ([deployer, author, tipper]) => {
   });
 
   describe('Images', async () => {
-    let result;
+    let result, imageCount;
+    const hash = '1234abcd';
 
-    it('Test Creation of Images', async () => {
-      result = await dinsta.uploadImage();
-      let image = await dinsta.images(1);
-      console.log(image);
-    });
-    
+    before(async () => {
+      result = await dinsta.uploadImage(hash, 'Image Description', { from: author })
+      imageCount = await dinsta.imageCount()
+    })
+
+    it('Creates Images', async () => {
+      assert.equal(imageCount, 1)
+      // console.log(result.logs[0].args)
+      const event = result.logs[0].args
+      assert.equal(event.id.toNumber(), imageCount.toNumber(), 'ID is correct')
+      assert.equal(event.hash, hash, 'Hash is correct')
+      assert.equal(event.description, 'Image Description', 'Description is correct')
+      assert.equal(event.tipAmount, '0', 'Tip Amount is correct')
+      assert.equal(event.author, author, 'Author is correct')
+    })
   });
-
 });
