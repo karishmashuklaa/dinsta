@@ -26,13 +26,16 @@ contract Dinsta {
     // create images
     function uploadImage(string memory _imgHash, string memory _description) public {
 
-        // increment image id
-        imageCount = imageCount ++;
+        require(bytes(_imgHash).length > 0);
+        require(bytes(_description).length > 0);
+        require(msg.sender != address(0x0));
+
+        imageCount ++;
 
         // add image to contract
-        images[imageCount] = Image(imageCount, _imgHash, _description, 0 msg.sender);
+        images[imageCount] = Image(imageCount, _imgHash, _description, 0, msg.sender);
+
+        // trigger the event
+        emit ImageCreated(imageCount, _imgHash, _description, 0, msg.sender);
     }
-    
-    // trigger the event
-    emit ImageCreated(imageCount, _imgHash, _description, 0 msg.sender);
 }
