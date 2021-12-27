@@ -1,21 +1,45 @@
 import React, { Component } from 'react';
-import logo from '../logo.png';
+import Header from './Header';
+import Web3 from 'web3';
 
 class App extends Component {
+
+  async componentWillMount() {
+    await this.loadWeb3()
+    await this.loadBlockchainData()
+  }
+
+  async loadWeb3() {
+    if (window.ethereum) {
+      window.web3 = new Web3(window.ethereum);
+      await window.ethereum.enable();
+    } else if (window.web3) {
+      window.web3 = new Web3(window.web3.currentProvider);
+    } else {
+      window.alert(
+        'Non-Ethereum browser detected. Please install MetaMask.'
+      );
+    }
+  }
+
+  async loadBlockchainData() {
+    const web3 = window.web3
+    // Load account
+    const accounts = await web3.eth.getAccounts()
+    // console.log(accounts[0])
+    this.setState({ account: accounts[0] })
+  }
+
+  constructor(props) {
+    super(props)
+    this.state = { account: '' }
+  }
+
   render() {
     return (
-      <div>
-        <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
-          <a
-            className="navbar-brand col-sm-3 col-md-2 mr-0"
-            href="/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            D-INSTA
-          </a>
-        </nav>
-      </div>
+      <>
+        <Header />
+      </>
     );
   }
 }
