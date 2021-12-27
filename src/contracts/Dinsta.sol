@@ -48,7 +48,10 @@ contract Dinsta {
     }
 
     // tip images
+    // TODO: @ Check Tipper gives ether > 0
     function tipImageOwner(uint _id) public payable {
+        // make sure id is valid
+        require(_id > 0 && _id <= imageCount);
         // fetch image
         Image memory _image = images[_id];
 
